@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filestorage
+  namespace: minio-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filestorage
+  template:
+    metadata:
+      labels:
+        app: filestorage
+    spec:
+      containers:
+        - name: filestorage
+          image: smey09/minio-demo-filestorage:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MINIO_URL
+              value: http://minio-service:9000
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: MINIO_ROOT_USER
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: MINIO_ROOT_PASSWORD
+            - name: MINIO_BUCKET_NAME
+              value: uploads

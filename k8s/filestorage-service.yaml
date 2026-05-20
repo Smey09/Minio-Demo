@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: filestorage-service
+  namespace: minio-demo
+spec:
+  selector:
+    app: filestorage
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: ClusterIP
