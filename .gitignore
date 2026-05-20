@@ -1,0 +1,35 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse, IntelliJ, VS Code
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+.vscode/
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Spring Boot
+spring.log
+
+# Generated / build files
+*.class
+*.jar
+*.war
+*.ear
+
+# MinIO data (local state)
+MinIO/data/
+
+# Maven wrapper script backup
+mvnw.cmd~
