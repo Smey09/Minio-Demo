@@ -1,4 +1,4 @@
-# MyCore Repository
+# MinIO Demo Repository
 
 This workspace contains two main components:
 
