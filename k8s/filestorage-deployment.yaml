@@ -16,6 +16,7 @@ spec:
       containers:
         - name: filestorage
           image: smey09/minio-demo-filestorage:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:
@@ -33,3 +34,22 @@ spec:
                   key: MINIO_ROOT_PASSWORD
             - name: MINIO_BUCKET_NAME
               value: uploads
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3

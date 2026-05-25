@@ -16,6 +16,7 @@ spec:
       containers:
         - name: minio
           image: minio/minio:latest
+          imagePullPolicy: IfNotPresent
           args:
             - server
             - /data
@@ -38,6 +39,25 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          livenessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
       volumes:
         - name: data
           persistentVolumeClaim:
