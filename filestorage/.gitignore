@@ -1,33 +1,54 @@
-HELP.md
+```gitignore
+# =====================
+# Maven / Build
+# =====================
 target/
-.mvn/wrapper/maven-wrapper.jar
+build/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
-.apt_generated
+HELP.md
+
+# =====================
+# Backup (local MinIO backup)
+# =====================
+backup/
+test-backup/
+
+# =====================
+# IDE - IntelliJ
+# =====================
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# =====================
+# STS / Eclipse
+# =====================
 .classpath
-.factorypath
 .project
-.settings
+.settings/
+.factorypath
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
+# =====================
+# NetBeans
+# =====================
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# =====================
+# VS Code
+# =====================
 .vscode/
+
+# =====================
+# Logs (optional)
+# =====================
+*.log
+```
