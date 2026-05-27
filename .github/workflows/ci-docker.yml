@@ -1,55 +1,65 @@
 name: CI - Build, Test, Build & Push Container
 
 on:
-    push:
-        branches: [main]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
 
 permissions:
-    contents: read
-    packages: write
+  contents: read
+  packages: write
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+  build:
+    runs-on: ubuntu-latest
 
-            - name: Set up JDK 21
-              uses: actions/setup-java@v4
-              with:
-                  distribution: temurin
-                  java-version: 21
-                  cache: maven
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name: Build and test JAR
-              working-directory: filestorage
-              run: |
-                  chmod +x ./mvnw
-                  ./mvnw -B -ntp clean verify
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
 
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v2
+      - name: Build and test JAR
+        working-directory: filestorage
+        run: |
+          chmod +x ./mvnw
+          ./mvnw -B -ntp clean verify
 
-            - name: Set up QEMU
-              uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-            - name: Log in to GitHub Container Registry
-              uses: docker/login-action@v2
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-            - name: Build and push image to GHCR
-              uses: docker/build-push-action@v5
-              with:
-                  context: ./filestorage
-                  file: ./filestorage/Dockerfile
-                  push: true
-                  platforms: linux/amd64,linux/arm64
-                  tags: |
-                      ghcr.io/${{ github.repository_owner }}/filestorage:latest
-                      ghcr.io/${{ github.repository_owner }}/filestorage:${{ github.sha }}
+      - name: Convert repository owner to lowercase
+        id: repo_owner
+        run: |
+          echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image to GHCR
+        uses: docker/build-push-action@v5
+        with:
+          context: ./filestorage
+          file: ./filestorage/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ghcr.io/${{ steps.repo_owner.outputs.owner }}/filestorage:latest
+            ghcr.io/${{ steps.repo_owner.outputs.owner }}/filestorage:${{ github.sha }}
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
